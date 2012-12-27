@@ -4,7 +4,32 @@ import urllib
 app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/<query>", methods=['GET', 'POST'])
-def main(query=None, url=None):
+def main(query=None):
+
+    if request.method == "POST":
+        url = request.form['url']
+        if not url.startswith("http"):
+            url = "http://"+url
+	write(url)        
+        html = urllib.urlopen(url).read()
+	site(html)
+        return render_template("site.html")
+
+    if query:
+        with open("url.txt", 'r') as url:
+	    query = request.url.split("/")[3]
+            source = urllib.urlopen(url.read() +"/"+ query).read()
+            site(source)
+        return render_template("site.html")            
+    return render_template("index.html")
+
+
+
+def write(url):
+   with open("url.txt", 'w') as file:
+       file.write(url)
+
+def site(html):
     data = """<center><div style='z-index: 15;
 margin:1%;
 padding:1%;
@@ -18,31 +43,7 @@ font-family:Arial,Helvetica,sans-serif;
 <noscript><a href="http://www.bidvertiser.com">pay per click</a></noscript>
 
 <!-- End BidVertiser code --> </center>"""
-
-    if request.method == "POST":
-        url = request.form['url']
-	f = open("url.txt",'w') 
-	f.write(url)
-	f.close()
-        if not url.startswith("http"):
-	    url = "http://"+url 
-
-        stuff = urllib.urlopen(url).read()
-        with open("templates/site.html", 'w') as file:
-            file.write(data+stuff)
-	    return render_template("site.html")   
-    if query:
-	f = open('url.txt', 'r')
-	stuff = f.read()
-	if not stuff.startswith("http"): stuff = "http://"+stuff
-	stuff = urllib.urlopen(stuff+"/"+query).read()
-        f.close()
-        with open("templates/site.html", 'w') as file:
-            file.write(data+stuff)
-            return render_template("site.html")
-       
-    return render_template("index.html")
-
-
+    with open("templates/site.html", 'w') as site:
+        site.write(data+html)
 if __name__ == '__main__':
     app.run('0.0.0.0', 81, debug=True)
