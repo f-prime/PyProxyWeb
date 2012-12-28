@@ -7,23 +7,28 @@ app = Flask(__name__)
 def main(query=None):
 
     if request.method == "POST":
+      try:
         url = request.form['url']
         if not url.startswith("http"):
             url = "http://"+url
-	write(url)        
+        write(url)
         html = urllib.urlopen(url).read()
-	site(html)
+        site(html)
         return render_template("site.html")
+      except Exception, error:
+         print error
+         pass
 
     if query:
+      try:
         with open("url.txt", 'r') as url:
-	    query = request.url.split("/")[3]
+            query = request.url.split("/")[3]
             source = urllib.urlopen(url.read() +"/"+ query).read()
             site(source)
-        return render_template("site.html")            
-    return render_template("index.html")
-
-
+        return render_template("site.html")
+      except Exception, error:
+           print error
+           pass
 
 def write(url):
    with open("url.txt", 'w') as file:
