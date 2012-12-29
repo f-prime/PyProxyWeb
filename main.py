@@ -46,19 +46,28 @@ def write(url):
        file.write(url)
 
 def site(html):
-    data = """<center><div style='z-index: 15;
-margin:1%;
-padding:1%;
-background: white;
-color: black;
+    data = """<style type='text/css'>top-margin:50%;</style><center style="
+position:absolute;
+top:0;
+left:0;
+z-index: 15;
+width: 100%;
+margin:0;
+padding:0;
+border:0;
+background-color: white;
+color: black;s
 font-family:Arial,Helvetica,sans-serif;
-'><h1>PyProxy</h1><form method='post'><input type='text' name='url' placeholder='http://google.com/' style='width:65%; margin:1px;'/><input style='' type='submit' value='Go!'/></form></div><br/> <!-- Begin BidVertiser code -->
+
+ "><div name='PyProxy-style'><h1>PyProxy</h1><form method='post'><input type='text' name='url' placeholder='http://google.com/' style='width:65%; margin:1px;'/><input style='' type='submit' value='Go!'/></form></div><br/> <!-- Begin BidVertiser code -->
 
 <SCRIPT LANGUAGE="JavaScript1.1" SRC="http://bdv.bidvertiser.com/BidVertiser.dbm?pid=407869&bid=1255216" type="text/javascript"></SCRIPT>
 
 <noscript><a href="http://www.bidvertiser.com">pay per click</a></noscript>
 
-<!-- End BidVertiser code --> </center>"""
+<!-- End BidVertiser code --><br/><br/> </center><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+"""
     with open("templates/site.html", 'w') as site:
         site.write(data+html)
 if __name__ == '__main__':
