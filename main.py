@@ -29,7 +29,7 @@ def main(query=None):
       except Exception, error:
            print error
            pass
-
+    return render_template("index.html")
 def write(url):
    with open("url.txt", 'w') as file:
        file.write(url)
