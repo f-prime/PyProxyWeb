@@ -18,6 +18,7 @@ def main(query=None):
 
     if query:
       try:
+          query = request.url.split("/")[3]
           threading.Thread(target=POSTQueryThread, args=(query,)).start()  
           time.sleep(3)
           return render_template("site.html")
@@ -30,7 +31,6 @@ def main(query=None):
 
 def POSTQueryThread(query):
       with open("url.txt", 'r') as url:
-          query = request.url.split("/")[3]
           source = urllib.urlopen(url.read() +"/"+ query).read()
           site(source)
 
