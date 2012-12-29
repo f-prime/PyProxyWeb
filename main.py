@@ -1,5 +1,5 @@
 from flask import request, Flask, render_template
-import urllib
+import urllib, threading, time
 
 app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
@@ -9,11 +9,8 @@ def main(query=None):
     if request.method == "POST":
       try:
         url = request.form['url']
-        if not url.startswith("http"):
-            url = "http://"+url
-        write(url)
-        html = urllib.urlopen(url).read()
-        site(html)
+        threading.Thread(target=POSTThread, args=(url,)).start()
+        time.sleep(3)
         return render_template("site.html")
       except Exception, error:
          print error
@@ -21,15 +18,29 @@ def main(query=None):
 
     if query:
       try:
-        with open("url.txt", 'r') as url:
-            query = request.url.split("/")[3]
-            source = urllib.urlopen(url.read() +"/"+ query).read()
-            site(source)
-        return render_template("site.html")
+          threading.Thread(target=POSTQueryThread, args=(query,)).start()  
+          time.sleep(3)
+          return render_template("site.html")
       except Exception, error:
            print error
            pass
     return render_template("index.html")
+
+
+
+def POSTQueryThread(query):
+      with open("url.txt", 'r') as url:
+          query = request.url.split("/")[3]
+          source = urllib.urlopen(url.read() +"/"+ query).read()
+          site(source)
+
+def POSTThread(url):
+    if not url.startswith("http"):
+        url = "http://"+url
+    write(url)
+    html = urllib.urlopen(url).read()
+    site(html)
+
 def write(url):
    with open("url.txt", 'w') as file:
        file.write(url)
